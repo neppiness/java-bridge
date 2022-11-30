@@ -7,13 +7,12 @@ import java.util.List;
  */
 public class BridgeGame {
 
-    private final InputView inputView = new InputView();
     List<String> bridge;
 
     BridgeGame() {
         BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
-        int bridgeSize = getBridgeSize();
-        this.bridge = new BridgeMaker(bridgeNumberGenerator).makeBridge();
+        int bridgeSize = new BridgeSize().getValue();
+        this.bridge = new BridgeMaker(bridgeNumberGenerator).makeBridge(bridgeSize);
     }
     /**
      * 사용자가 칸을 이동할 때 사용하는 메서드
@@ -31,9 +30,6 @@ public class BridgeGame {
     public void retry() {
     }
 
-    private int getBridgeSize() {
 
-        inputView.readBridgeSize();
-    }
 
 }

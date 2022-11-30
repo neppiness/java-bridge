@@ -1,15 +1,30 @@
 package bridge;
 
+import camp.nextstep.edu.missionutils.Console;
+
 /**
  * 사용자로부터 입력을 받는 역할을 한다.
  */
 public class InputView {
 
+    private String lineInput;
+
+    InputView() {
+        this.lineInput = Console.readLine();
+    }
+
     /**
      * 다리의 길이를 입력받는다.
      */
     public int readBridgeSize() {
-        return 0;
+        int number;
+        try {
+            number = Integer.parseInt(this.lineInput);
+        } catch (NumberFormatException e) {
+            new OutputView().printErrorMessage("3이상 20이하의 자연수를 입력해주세요.");
+            return -1;
+        }
+        return number;
     }
 
     /**
