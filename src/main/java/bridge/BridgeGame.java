@@ -23,10 +23,17 @@ public class BridgeGame {
         int bridgeSize = getBridgeSize();
         this.bridge = new BridgeMaker(bridgeNumberGenerator).makeBridge(bridgeSize);
     }
+
+    public void run() {
+        tryCycle();
+        outputView.announceEnd();
+        outputView.printResult(this.bridge, this.path, numberOfTry, isGameEnded());
+    }
+
     /**
      * 사용자가 칸을 이동할 때 사용하는 메서드
      */
-    public void move() {
+    private void move() {
         outputView.guideMove();
         String command = movingCommand.get();
         this.path.add(command);
@@ -35,19 +42,13 @@ public class BridgeGame {
     /**
      * 사용자가 게임을 다시 시도할 때 사용하는 메서드
      */
-    public void retry() {
+    private void retry() {
         numberOfTry++;
         path.remove(path.size() - 1);
         move();
     }
 
-    public void run() {
-        tryCycle();
-        outputView.announceEnd();
-        outputView.printResult(this.bridge, this.path, numberOfTry, isGameEnded());
-    }
-
-    public void tryCycle() {
+    private void tryCycle() {
         move();
         outputView.printMap(this.bridge, this.path);
         while(isWrongMove()) {
