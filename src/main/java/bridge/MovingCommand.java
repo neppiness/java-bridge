@@ -18,6 +18,7 @@ public class MovingCommand {
     private void validate(String inputCommand) {
         for (String validCommand : validCommands)
             if (inputCommand.equals(validCommand)) return;
-        throw new IllegalArgumentException("U 또는 D를 입력해주세요.");
+        throw new IllegalArgumentException(String.format("%s 또는 %s를 입력해주세요.",
+                validCommands.get(0), validCommands.get(1)));
     }
 }

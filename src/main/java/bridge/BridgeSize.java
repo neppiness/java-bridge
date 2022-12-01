@@ -5,10 +5,18 @@ package bridge;
  */
 public class BridgeSize {
 
-    int get() {
-        int bridgeSize = new InputView().readBridgeSize();
-        validateRange(bridgeSize);
-        return bridgeSize;
+    private static final OutputView outputView = new OutputView();
+
+    public int get() {
+        outputView.print("다리의 길이를 입력해주세요.");
+        try {
+            int bridgeSize = new InputView().readBridgeSize();
+            validateRange(bridgeSize);
+            return bridgeSize;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+        }
+        return get();
     }
 
     private void validateRange(int bridgeSize) {

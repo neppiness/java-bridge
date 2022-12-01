@@ -18,21 +18,14 @@ public class InputView {
      */
     public int readBridgeSize() {
         int number;
-        try {
-            number = Integer.parseInt(this.lineInput);
-        } catch (NumberFormatException e) {
-            new OutputView().printErrorMessage("3이상 20이하의 자연수를 입력해주세요.");
-            return -1;
-        }
+        number = Integer.parseInt(this.lineInput);
         return number;
     }
 
     /**
      * 사용자가 이동할 칸을 입력받는다.
      */
-    public String readMoving() {
-        return lineInput;
-    }
+    public String readMoving() { return lineInput; }
 
     /**
      * 사용자가 게임을 다시 시도할지 종료할지 여부를 입력받는다.

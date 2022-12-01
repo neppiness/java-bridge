@@ -1,5 +1,6 @@
 package bridge;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,30 +11,29 @@ public class BridgeGame {
     final static OutputView outputView = new OutputView();
     final static MovingCommand movingCommand = new MovingCommand();
     final static GameCommand gameCommand = new GameCommand();
+    final static BridgeSize bridgeSize = new BridgeSize();
 
-    List<String> bridge, path;
-    int numberOfTry = 0;
+    List<String> bridge;
+    List<String> path = new ArrayList<>();
+    int numberOfTry = 1;
 
     BridgeGame() {
+        outputView.announceStart();
         BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
-        int bridgeSize = new BridgeSize().get();
+        int bridgeSize = getBridgeSize();
         this.bridge = new BridgeMaker(bridgeNumberGenerator).makeBridge(bridgeSize);
     }
     /**
      * 사용자가 칸을 이동할 때 사용하는 메서드
-     * <p>
-     * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public void move() {
         outputView.guideMove();
         String command = movingCommand.get();
-        path.add(command);
+        this.path.add(command);
     }
 
     /**
      * 사용자가 게임을 다시 시도할 때 사용하는 메서드
-     * <p>
-     * 재시작을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public void retry() {
         numberOfTry++;
@@ -42,11 +42,9 @@ public class BridgeGame {
     }
 
     public void run() {
-        outputView.announceStart();
         tryCycle();
         outputView.announceEnd();
-        outputView.printMap(this.bridge, this.path);
-        outputView.announceResult(numberOfTry, isGameEnded());
+        outputView.printResult(this.bridge, this.path, numberOfTry, isGameEnded());
     }
 
     public void tryCycle() {
@@ -60,11 +58,20 @@ public class BridgeGame {
         if(!isGameEnded()) tryCycle();
     }
 
+    private int getBridgeSize() {
+        try {
+            return bridgeSize.get();
+        } catch(IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+        }
+        return getBridgeSize();
+    }
+
     private boolean isWrongMove() {
         int currentPosition = path.size() - 1;
         String currentBridgePartition = this.bridge.get(currentPosition);
         String currentPath = this.path.get(currentPosition);
-        return currentBridgePartition.equals(currentPath);
+        return !currentBridgePartition.equals(currentPath);
     }
 
     private boolean isGameEnded() { return path.equals(bridge); }
