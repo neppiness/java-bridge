@@ -7,11 +7,16 @@ import java.util.List;
  */
 public class BridgeGame {
 
-    List<String> bridge;
+    final static OutputView outputView = new OutputView();
+    final static MovingCommand movingCommand = new MovingCommand();
+    final static GameCommand gameCommand = new GameCommand();
+
+    List<String> bridge, path;
+    int numberOfTry = 0;
 
     BridgeGame() {
         BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
-        int bridgeSize = new BridgeSize().getValue();
+        int bridgeSize = new BridgeSize().get();
         this.bridge = new BridgeMaker(bridgeNumberGenerator).makeBridge(bridgeSize);
     }
     /**
@@ -20,7 +25,9 @@ public class BridgeGame {
      * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public void move() {
-        String movingCommand = new MovingCommand().get();
+        outputView.guideMove();
+        String command = movingCommand.get();
+        path.add(command);
     }
 
     /**
@@ -29,24 +36,38 @@ public class BridgeGame {
      * 재시작을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public void retry() {
+        numberOfTry++;
+        path.remove(path.size() - 1);
+        move();
     }
 
     public void run() {
-        announceStart();
+        outputView.announceStart();
         tryCycle();
-        announceEnd();
-        printMap();
+        outputView.announceEnd();
+        outputView.printMap(this.bridge, this.path);
+        outputView.announceResult(numberOfTry, isGameEnded());
     }
 
     public void tryCycle() {
         move();
-        printMap();
-        while(isWrong) {
-            getExecutionCode;
-            if (wantToExit) return;
+        outputView.printMap(this.bridge, this.path);
+        while(isWrongMove()) {
+            if (wantToExit(gameCommand.get())) return;
             retry();
-            printMap();
+            outputView.printMap(this.bridge, this.path);
         }
-        if(!isGameEnded) tryCycle();
+        if(!isGameEnded()) tryCycle();
     }
+
+    private boolean isWrongMove() {
+        int currentPosition = path.size() - 1;
+        String currentBridgePartition = this.bridge.get(currentPosition);
+        String currentPath = this.path.get(currentPosition);
+        return currentBridgePartition.equals(currentPath);
+    }
+
+    private boolean isGameEnded() { return path.equals(bridge); }
+
+    private boolean wantToExit(String gameCommand) { return gameCommand.equals("Q"); }
 }

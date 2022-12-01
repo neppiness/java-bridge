@@ -7,17 +7,17 @@ import java.util.List;
  */
 public class MovingCommand {
 
-    static final List<String> movingCommands = List.of(new String[]{"U", "D"});
+    static final List<String> validCommands = List.of(new String[]{"U", "D"});
 
     public String get() {
-        String inputString = new InputView().readMoving();
-        validate(inputString);
-        return inputString;
+        String movingCommand = new InputView().readMoving();
+        validate(movingCommand);
+        return movingCommand;
     }
 
-    private void validate(String inputString) {
-        for (String moving : movingCommands)
-            if (inputString.equals(movingCommands)) return;
+    private void validate(String inputCommand) {
+        for (String validCommand : validCommands)
+            if (inputCommand.equals(validCommand)) return;
         throw new IllegalArgumentException("U 또는 D를 입력해주세요.");
     }
 }
